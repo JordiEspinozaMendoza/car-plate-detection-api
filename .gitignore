@@ -1,0 +1,6 @@
+.env
+env/
+__pycache__
+# misc
+.DS_Store
+.vscode
