@@ -12,6 +12,8 @@ def getCarPlateImage(image):
         np_data = np.fromstring(decoded_data, np.uint8)
         img = cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
 
+        img = cv2.resize(img, (620, 480))
+
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         pic_IObytes = io.BytesIO()
         plt.imsave(pic_IObytes, gray, format="png")
@@ -34,18 +36,17 @@ def getCarPlateImage(image):
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
         # Init location of number plate
         location = None
+
         # loop over contours
         for contour in contours:
-            # approximate the contour
-            approx = cv2.approxPolyDP(contour, 10, True)
+            peri = cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, 0.018 * peri, True)
             if len(approx) == 4:
                 location = approx
                 break
-            else:
-                approx = cv2.approxPolyDP(contour, 15, True)
-                if len(approx) == 4:
-                    location = approx
-                    break
+
+        if location is None:
+            return None
 
         mask = np.zeros(gray.shape, np.uint8)
         new_image = cv2.drawContours(mask, [location], 0, 255, -1)
@@ -54,9 +55,6 @@ def getCarPlateImage(image):
         plt.imsave(pic_IObytes, new_image, format="png")
         pic_IObytes.seek(0)
         pic_hash = base64.b64encode(pic_IObytes.read())
-
-        if location is None:
-            return None
 
         (x, y) = np.where(mask == 255)
         (x1, y1) = (np.min(x), np.min(y))
