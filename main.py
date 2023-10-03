@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from utils import getCarPlateImage
+from utils import getCarPlateImageHaarcascade
 
 
 class Image(BaseModel):
@@ -30,7 +30,7 @@ def read_root():
 
 @app.post("/api/process-image/")
 def process_image(image: Image):
-    result = getCarPlateImage(image)
+    result = getCarPlateImageHaarcascade(image)
 
     if result is None:
         raise HTTPException(status_code=404, detail="Image not processed correctly")
