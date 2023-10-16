@@ -1,14 +1,19 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from utils import getCarPlateImageHaarcascade
+from utils_api import labelImage, cutImage, readText
+from segmentation import get_yolov5
+import json
+import io
+from PIL import Image
 
+model = get_yolov5()
 
-class Image(BaseModel):
-    base64: str
-
-
-app = FastAPI()
+app = FastAPI(
+    title="Car plate detection API with Yolov5",
+    description="This is a very fancy project, with auto docs for the API and everything",
+    version="0.0.1",
+)
 
 origins = [
     "http://localhost:3000",
@@ -23,16 +28,32 @@ app.add_middleware(
 )
 
 
+@app.get("/notify/v1/health")
+def get_health():
+    return dict(msg="OK")
+
+
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "adsadsa"}
 
 
 @app.post("/api/process-image/")
-def process_image(image: Image):
-    result = getCarPlateImageHaarcascade(image)
+async def process_image(file: bytes = File(...)):
+    image = Image.open(io.BytesIO(file))
+    results = model(image)
 
-    if result is None:
-        raise HTTPException(status_code=404, detail="Image not processed correctly")
+    detect_res = results.pandas().xyxy[0].to_json(orient="records")
+    detect_res = json.loads(detect_res)
 
-    return {"result": result}
+    results = labelImage(image, detect_res)
+    car_plates = []
+
+    for res in detect_res:
+        if res["name"] == "car-plate":
+            result = cutImage(image, res)
+            text = readText(result["cv2"])
+
+            car_plates.append({"image": result["image"], "text": text})
+
+    return {"results": results, "car_plates": car_plates}
