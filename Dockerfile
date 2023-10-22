@@ -1,28 +1,21 @@
-FROM tiangolo/uvicorn-gunicorn:python3.9-slim
+FROM ubuntu:latest
 
-ENV WORKERS_PER_CORE=4 
-ENV MAX_WORKERS=24
-ENV LOG_LEVEL="warning"
-ENV TIMEOUT="200"
+# Install Python and pip
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip
 
-RUN mkdir /car-plate-detector
+# Set the working directory
+WORKDIR /app
 
-RUN apt update && apt install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrender1 libgl1-mesa-glx
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
-COPY requirements.txt /car-plate-detector
+# Copy the FastAPI project files
+COPY . .
 
-COPY . /car-plate-detector
-
-WORKDIR /car-plate-detector
-
-RUN cd yolov5
-
-RUN pip install -r requirements.txt
-
-RUN cd ..    
-
-RUN pip install -r requirements.txt
-
+# Expose the port that the FastAPI app will run on
 EXPOSE 8000
 
+# Start the FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
