@@ -5,7 +5,7 @@ EXPOSE 8000
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     apt-get install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrender1 libgl1-mesa-glx && \
-    apt-get install -y git && 
+    apt-get install -y git
 
 # Set the working directory
 WORKDIR /code
