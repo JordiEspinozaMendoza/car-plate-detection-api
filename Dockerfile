@@ -5,6 +5,5 @@ RUN apt-get update && \
 WORKDIR /code
 COPY requirements.txt /code/
 RUN pip3 install -r requirements.txt
-RUN python -m pip install --upgrade pip
 COPY . /code/
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
