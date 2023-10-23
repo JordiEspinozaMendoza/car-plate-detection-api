@@ -1,11 +1,11 @@
 from fastapi import FastAPI, File
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage, readText
 from segmentation import get_yolov5
 import json
 import io
 from PIL import Image
+import os
 
 model = get_yolov5()
 
@@ -15,9 +15,9 @@ app = FastAPI(
     version="0.0.1",
 )
 
-origins = [
-    "http://localhost:3000",
-]
+ORIGINS = os.environ.get("ORIGINS", "*")
+
+origins = ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,7 +30,9 @@ app.add_middleware(
 
 @app.get("/notify/v1/health")
 def get_health():
-    return dict(msg="OK")
+    return {
+        "status": "UP",
+    }
 
 
 @app.get("/")
