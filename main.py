@@ -10,8 +10,8 @@ import os
 
 model = None
 
-# if model is None:
-#     raise Exception("Model not found")
+if model is None:
+    raise Exception("Model not found")
 
 app = FastAPI(
     title="Car plate detection API with Yolov5",
