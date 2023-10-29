@@ -2,13 +2,16 @@ from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage, readText
 
-# from segmentation import get_yolov5
+from segmentation import get_yolov5
 import json
 import io
 from PIL import Image
 import os
 
-# model = get_yolov5()
+model = None
+
+# if model is None:
+#     raise Exception("Model not found")
 
 app = FastAPI(
     title="Car plate detection API with Yolov5",
@@ -41,22 +44,22 @@ def read_root():
     return {"Hello": "adsadsa"}
 
 
-# @app.post("/api/process-image/")
-# async def process_image(file: bytes = File(...)):
-#     image = Image.open(io.BytesIO(file))
-#     results = model(image)
+@app.post("/api/process-image/")
+async def process_image(file: bytes = File(...)):
+    image = Image.open(io.BytesIO(file))
+    results = model(image)
 
-#     detect_res = results.pandas().xyxy[0].to_json(orient="records")
-#     detect_res = json.loads(detect_res)
+    detect_res = results.pandas().xyxy[0].to_json(orient="records")
+    detect_res = json.loads(detect_res)
 
-#     results = labelImage(image, detect_res)
-#     car_plates = []
+    results = labelImage(image, detect_res)
+    car_plates = []
 
-#     for res in detect_res:
-#         if res["name"] == "car-plate":
-#             result = cutImage(image, res)
-#             text = readText(result["cv2"])
+    for res in detect_res:
+        if res["name"] == "car-plate":
+            result = cutImage(image, res)
+            text = readText(result["cv2"])
 
-#             car_plates.append({"image": result["image"], "text": text})
+            car_plates.append({"image": result["image"], "text": text})
 
-#     return {"results": results, "car_plates": car_plates}
+    return {"results": results, "car_plates": car_plates}
