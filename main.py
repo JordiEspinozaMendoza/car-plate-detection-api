@@ -1,14 +1,23 @@
 from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage, readText
-
+from roboflow_utils import getPredictionFromRoboflow
 from segmentation import get_yolov5
 import json
 import io
 from PIL import Image
 import os
+import json
 
-model = get_yolov5()
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+model = None
+
+if os.environ.get("ENV") == "development":
+    model = get_yolov5()
 
 app = FastAPI(
     title="Car plate detection API with Yolov5",
@@ -44,10 +53,13 @@ def read_root():
 @app.post("/api/process-image/")
 async def process_image(file: bytes = File(...)):
     image = Image.open(io.BytesIO(file))
-    results = model(image)
 
-    detect_res = results.pandas().xyxy[0].to_json(orient="records")
-    detect_res = json.loads(detect_res)
+    if model:
+        results = model(image)
+        detect_res = results.pandas().xyxy[0].to_json(orient="records")
+        detect_res = json.loads(detect_res)
+    else:
+        detect_res = getPredictionFromRoboflow(file)
 
     results = labelImage(image, detect_res)
     car_plates = []
