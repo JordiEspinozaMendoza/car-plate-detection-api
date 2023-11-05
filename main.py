@@ -8,10 +8,7 @@ import io
 from PIL import Image
 import os
 
-model = None
-
-if model is None:
-    raise Exception("Model not found")
+model = get_yolov5()
 
 app = FastAPI(
     title="Car plate detection API with Yolov5",
