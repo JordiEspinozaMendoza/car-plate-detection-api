@@ -2,7 +2,6 @@ from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage, readText
 from roboflow_utils import getPredictionFromRoboflow
-from segmentation import get_yolov5
 import json
 import io
 from PIL import Image
@@ -17,6 +16,10 @@ load_dotenv()
 model = None
 
 if os.environ.get("ENV") == "development":
+    from segmentation import get_yolov5
+
+    print("Loading model...")
+
     model = get_yolov5()
 
 app = FastAPI(
