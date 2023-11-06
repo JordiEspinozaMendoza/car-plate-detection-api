@@ -1,5 +1,6 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
+RUN apt-get install python3-opencv -y
 
 COPY ./requirements.txt /app/requirements.txt
 
