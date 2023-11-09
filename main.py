@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
 from roboflow_utils import getPredictionFromRoboflow
 import io
