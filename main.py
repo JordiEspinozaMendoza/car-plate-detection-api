@@ -15,14 +15,13 @@ app = FastAPI(
     version="0.0.1",
 )
 
-ORIGINS = os.environ.get("ORIGINS", "*")
+# ORIGINS = os.environ.get("ORIGINS", "*")
 
-origins = ORIGINS.split(",")
+# origins = ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
@@ -42,17 +41,18 @@ def read_root():
 
 @app.post("/api/process-image/")
 async def process_image(file: bytes = File(...)):
-    image = Image.open(io.BytesIO(file))
-
     detect_res = getPredictionFromRoboflow(file)
 
-    results = labelImage(image, detect_res)
+    file = io.BytesIO(file)
+    file = Image.open(file)
+    file = file.convert("RGB")
+
+    results = labelImage(file, detect_res)
     car_plates = []
 
     for res in detect_res:
         if res["name"] == "car-plate":
-            result = cutImage(image, res)
-            text = readText(result["cv2"])
+            result = cutImage(file, res)
             text = ""
 
             car_plates.append({"image": result["image"], "text": text})

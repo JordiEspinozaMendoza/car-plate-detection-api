@@ -4,7 +4,6 @@ import base64
 
 import io
 from matplotlib import pyplot as plt
-from PIL import Image
 
 
 def labelImage(image, detections):
