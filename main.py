@@ -28,6 +28,10 @@ app.add_middleware(
 )
 
 
+class Image64Request(BaseModel):
+    image: str
+
+
 @app.get("/notify/v1/health")
 def get_health():
     return {
@@ -41,21 +45,22 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-def process_image(file: Annotated[bytes, File()]):
+def process_image(base64_image: Image64Request):
     try:
-        detect_res = getPredictionFromRoboflow(file)
+        print(base64_image)
+        # detect_res = getPredictionFromRoboflow(file)
 
-        file = Image.open(io.BytesIO(file))
+        # file = Image.open(io.BytesIO(file))
 
-        results = labelImage(file, detect_res)
+        results = []
         car_plates = []
 
-        for res in detect_res:
-            if res["name"] == "car-plate":
-                result = cutImage(file, res)
-                text = ""
+        # for res in detect_res:
+        #     if res["name"] == "car-plate":
+        #         result = cutImage(file, res)
+        #         text = ""
 
-                car_plates.append({"image": result["image"], "text": text})
+        #         car_plates.append({"image": result["image"], "text": text})
 
         return {"results": results, "car_plates": car_plates}
 
