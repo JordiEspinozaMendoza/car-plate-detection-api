@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, File
+from fastapi import FastAPI, Form, File, UploadFile
 from pydantic import BaseModel
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,7 +46,7 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-def process_image(base64_image: Image64Request):
+def process_image(file: UploadFile):
     try:
         # detect_res = getPredictionFromRoboflow(file)
 
