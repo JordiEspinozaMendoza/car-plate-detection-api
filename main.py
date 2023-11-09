@@ -15,13 +15,13 @@ app = FastAPI(
     version="0.0.1",
 )
 
-# ORIGINS = os.environ.get("ORIGINS", "*")
+ORIGINS = os.environ.get("ORIGINS", "*")
 
-# origins = ORIGINS.split(",")
+origins = ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
