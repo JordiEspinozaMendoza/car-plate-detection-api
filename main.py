@@ -40,7 +40,7 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-async def process_image(file: bytes = File(...)):
+def process_image(file: bytes = File(...)):
     try:
         detect_res = getPredictionFromRoboflow(file)
 
