@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
 from roboflow_utils import getPredictionFromRoboflow
@@ -45,14 +45,14 @@ async def process_image(file: bytes = File(...)):
 
     file = Image.open(io.BytesIO(file))
 
-    results = labelImage(file, detect_res)
-    car_plates = []
+    # results = labelImage(file, detect_res)
+    # car_plates = []
 
-    for res in detect_res:
-        if res["name"] == "car-plate":
-            result = cutImage(file, res)
-            text = ""
+    # for res in detect_res:
+    #     if res["name"] == "car-plate":
+    #         result = cutImage(file, res)
+    #         text = ""
 
-            car_plates.append({"image": result["image"], "text": text})
+    #         car_plates.append({"image": result["image"], "text": text})
 
-    return {"results": results, "car_plates": car_plates}
+    return {"results": [], "car_plates": []}
