@@ -22,7 +22,7 @@ origins = ORIGINS.split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_methods=["POST", "GET"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -43,9 +43,7 @@ def read_root():
 async def process_image(file: bytes = File(...)):
     detect_res = getPredictionFromRoboflow(file)
 
-    file = io.BytesIO(file)
-    file = Image.open(file)
-    file = file.convert("RGB")
+    file = Image.open(io.BytesIO(file))
 
     results = labelImage(file, detect_res)
     car_plates = []
