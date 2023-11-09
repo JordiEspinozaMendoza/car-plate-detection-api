@@ -1,7 +1,8 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
-RUN apt-get install libsm6 libxext6  -y
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
+RUN apt-get update && \
+    apt-get install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrender1 libgl1-mesa-glx
 
 COPY ./requirements.txt /app/requirements.txt
 
