@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
 from roboflow_utils import getPredictionFromRoboflow
@@ -40,10 +40,10 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-async def process_image(file: bytes = File(...)):
+async def process_image(name: str):
     detect_res = getPredictionFromRoboflow(file)
 
-    print("Seems to be working")
+    print(name)
 
     # file = Image.open(io.BytesIO(file))
 
