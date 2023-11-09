@@ -2,13 +2,9 @@ import cv2
 import numpy as np
 import base64
 
-import easyocr
 import io
 from matplotlib import pyplot as plt
-import ssl
 from PIL import Image
-
-ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def labelImage(image, detections):
@@ -77,14 +73,14 @@ def readText(image):
     try:
         image = np.array(image)
 
-        reader = easyocr.Reader(["en"], gpu=False)
-        result = reader.readtext(image)
-        text = ""
+        # reader = easyocr.Reader(["en"], gpu=False)
+        # result = reader.readtext(image)
+        # text = ""
 
-        for i in range(len(result)):
-            text += result[i][1]
+        # for i in range(len(result)):
+        #     text += result[i][1]
 
-        return text
+        return ""
 
     except Exception as e:
         print(e, "readText")
