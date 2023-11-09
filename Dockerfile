@@ -1,12 +1,24 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim-buster
 
+# The environment variable ensures that the python output is set straight
+# to the terminal without buffering it first
+ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && \
-    apt-get install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrender1 libgl1-mesa-glx
+# create root directory for our project in the container
+RUN mkdir /app
 
-COPY ./requirements.txt /app/requirements.txt
+# Set the working directory in the container to /app
+WORKDIR /app
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+# Copy the current directory contents into the container at /app
+COPY ./ /app/
 
-COPY . /app/
+# Install pip requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
+# port where the Django app runs
+EXPOSE 8000
+
+# Start server
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
