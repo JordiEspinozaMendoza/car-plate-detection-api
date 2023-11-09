@@ -43,7 +43,9 @@ def read_root():
 async def process_image(file: bytes = File(...)):
     detect_res = getPredictionFromRoboflow(file)
 
-    file = Image.open(io.BytesIO(file))
+    print("Seems to be working")
+
+    # file = Image.open(io.BytesIO(file))
 
     # results = labelImage(file, detect_res)
     # car_plates = []
