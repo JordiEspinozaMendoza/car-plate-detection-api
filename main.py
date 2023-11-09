@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File
-from starlette.middleware.cors import CORSMiddleware
-from utils_api import labelImage, cutImage, readText
+from fastapi.middleware.cors import CORSMiddleware
+from utils_api import labelImage, cutImage
 from roboflow_utils import getPredictionFromRoboflow
 import io
 from PIL import Image
@@ -23,7 +23,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
 
