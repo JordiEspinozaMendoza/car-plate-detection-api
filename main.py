@@ -1,4 +1,5 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, Form, File
+from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
 from roboflow_utils import getPredictionFromRoboflow
@@ -40,7 +41,7 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-def process_image(file: bytes = File(...)):
+def process_image(file: Annotated[bytes, File()]):
     try:
         # detect_res = getPredictionFromRoboflow(file)
 
