@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Form, File
-from typing import Annotated
+from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
-from utils_api import labelImage, cutImage
+from utils_api import labelImage, cutImage, readText
 from roboflow_utils import getPredictionFromRoboflow
 import io
 from PIL import Image
 import os
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -53,7 +53,7 @@ def process_image(file: bytes = File(...)):
         for res in detect_res:
             if res["name"] == "car-plate":
                 result = cutImage(file, res)
-                text = ""
+                text = readText(result["cv2"])
 
                 car_plates.append({"image": result["image"], "text": text})
 
