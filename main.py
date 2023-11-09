@@ -40,21 +40,23 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-def process_image(file: bytes = File(...)):
+def process_image(name: str):
     try:
-        detect_res = getPredictionFromRoboflow(file)
+        print(name)
+        # detect_res = getPredictionFromRoboflow(file)
 
-        file = Image.open(io.BytesIO(file))
+        # file = Image.open(io.BytesIO(file))
 
-        results = labelImage(file, detect_res)
+        # results = labelImage(file, detect_res)
+        results = []
         car_plates = []
 
-        for res in detect_res:
-            if res["name"] == "car-plate":
-                result = cutImage(file, res)
-                text = ""
+        # for res in detect_res:
+        #     if res["name"] == "car-plate":
+        #         result = cutImage(file, res)
+        #         text = ""
 
-                car_plates.append({"image": result["image"], "text": text})
+        #         car_plates.append({"image": result["image"], "text": text})
 
         return {"results": results, "car_plates": car_plates}
 
