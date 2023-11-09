@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Form, File, UploadFile
-from pydantic import BaseModel
+from fastapi import FastAPI, Form, File
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
@@ -29,10 +28,6 @@ app.add_middleware(
 )
 
 
-class Image64Request(BaseModel):
-    image: str
-
-
 @app.get("/notify/v1/health")
 def get_health():
     return {
@@ -46,15 +41,13 @@ def read_root():
 
 
 @app.post("/api/process-image/")
-def process_image(file: UploadFile):
+def process_image(file: bytes = File(...)):
     try:
-        file = file.file.read()
-
         detect_res = getPredictionFromRoboflow(file)
 
         file = Image.open(io.BytesIO(file))
 
-        results = []
+        results = labelImage(file, detect_res)
         car_plates = []
 
         for res in detect_res:
