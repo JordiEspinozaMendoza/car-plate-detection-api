@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Form, File
+from pydantic import BaseModel
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from utils_api import labelImage, cutImage
@@ -47,7 +48,6 @@ def read_root():
 @app.post("/api/process-image/")
 def process_image(base64_image: Image64Request):
     try:
-        print(base64_image)
         # detect_res = getPredictionFromRoboflow(file)
 
         # file = Image.open(io.BytesIO(file))
