@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import base64
 
-# import easyocr
+import easyocr
 import io
 from matplotlib import pyplot as plt
 import ssl
@@ -73,19 +73,19 @@ def cutImage(image, coordinates):
         return []
 
 
-# def readText(image):
-#     try:
-#         image = np.array(image)
+def readText(image):
+    try:
+        image = np.array(image)
 
-#         reader = easyocr.Reader(["en"], gpu=False)
-#         result = reader.readtext(image)
-#         text = ""
+        reader = easyocr.Reader(["en"], gpu=False)
+        result = reader.readtext(image)
+        text = ""
 
-#         for i in range(len(result)):
-#             text += result[i][1]
+        for i in range(len(result)):
+            text += result[i][1]
 
-#         return text
+        return text
 
-#     except Exception as e:
-#         print(e, "readText")
-#         return []
+    except Exception as e:
+        print(e, "readText")
+        return []
